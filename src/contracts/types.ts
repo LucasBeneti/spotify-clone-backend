@@ -1,11 +1,11 @@
-export type Playlist = {
+export type PlaylistType = {
     name: string;
-    author: string;
+    author_id: number;
 };
 export type User = {
     id: string;
     username: string;
-    playlists?: Playlist[];
+    playlists?: PlaylistType[];
     following?: Artist[] | User[];
 };
 

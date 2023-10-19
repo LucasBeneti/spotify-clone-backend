@@ -3,6 +3,7 @@ import Fastify, { FastifyReply, FastifyRequest } from 'fastify';
 
 import database from './database';
 import { searchRoutes } from './routes/searchRoutes';
+import { playlistRoutes } from './routes/playlistRoutes';
 
 const server = Fastify({
     logger: {
@@ -15,6 +16,7 @@ const server = Fastify({
 const PORT = 3000;
 
 server.register(searchRoutes, { prefix: '/search' });
+server.register(playlistRoutes, { prefix: '/playlist' });
 
 server.get('/', function (request: FastifyRequest, reply: FastifyReply) {
     database('albums')
