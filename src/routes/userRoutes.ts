@@ -28,4 +28,27 @@ export async function userRoutes(fastify: FastifyInstance) {
             reply.status(201).send({ response });
         }
     );
+
+    fastify.post(
+        '/follow',
+        async (
+            request: FastifyRequest<{
+                Querystring: { user_id: number; artist_id: number };
+            }>,
+            reply: FastifyReply
+        ) => {
+            try {
+                const { artist_id, user_id } = request.query;
+
+                await UserController.followArtist({
+                    user_id,
+                    artist_id,
+                });
+
+                reply.status(200);
+            } catch (error) {
+                console.error('Error while trying to follow artist.', error);
+            }
+        }
+    );
 }

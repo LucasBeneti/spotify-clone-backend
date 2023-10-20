@@ -35,8 +35,6 @@ export const deleteUser = async ({ user_id }: { user_id: number }) => {
     }
 };
 
-// TODO /POST follow artist
-
 export const followArtist = async ({
     user_id,
     artist_id,
@@ -45,10 +43,10 @@ export const followArtist = async ({
     artist_id: number;
 }) => {
     try {
-        // TODO currently trying to crete the migration to handle the new way to store
-        // an array for this field, and adding a new one for following_users
-        // const followRes = await database('users').where({id: user_id}).up
-    } catch (error) {}
+        await database('user_artist_following').insert({ user_id, artist_id });
+    } catch (error) {
+        console.error('Error while tryng to follow an artist.', error);
+    }
 };
 
 // TODO unfollow artist (don't know which verb)
