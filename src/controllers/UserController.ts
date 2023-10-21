@@ -50,3 +50,18 @@ export const followArtist = async ({
 };
 
 // TODO unfollow artist (don't know which verb)
+export const unfollowArtist = async ({
+    user_id,
+    artist_id,
+}: {
+    user_id: number;
+    artist_id: number;
+}) => {
+    try {
+        await database('user_artist_following')
+            .where({ user_id, artist_id })
+            .del();
+    } catch (error) {
+        console.error('Error while tryng to unfollow an artist.', error);
+    }
+};

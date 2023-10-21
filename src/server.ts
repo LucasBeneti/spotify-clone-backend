@@ -20,15 +20,6 @@ server.register(searchRoutes, { prefix: '/search' });
 server.register(playlistRoutes, { prefix: '/playlist' });
 server.register(userRoutes, { prefix: '/user' });
 
-// server.get('/', function (request: FastifyRequest, reply: FastifyReply) {
-//     database('albums')
-//         .select('*')
-//         .then((albums) => {
-//             console.log('LOG albums', albums);
-//             reply.status(200).send({ albums });
-//         });
-// });
-
 server.listen({ port: PORT, host: '0.0.0.0' }, (err, address) => {
     database
         .raw('SELECT 1')

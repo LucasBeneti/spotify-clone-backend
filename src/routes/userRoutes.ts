@@ -51,4 +51,26 @@ export async function userRoutes(fastify: FastifyInstance) {
             }
         }
     );
+
+    fastify.delete(
+        '/unfollow',
+        async (
+            request: FastifyRequest<{
+                Querystring: { user_id: number; artist_id: number };
+            }>,
+            reply: FastifyReply
+        ) => {
+            try {
+                const { artist_id, user_id } = request.query;
+                await UserController.unfollowArtist({ artist_id, user_id });
+
+                reply.status(204);
+            } catch (error) {
+                console.error(
+                    'Error while attempting to unfollow an artists',
+                    error
+                );
+            }
+        }
+    );
 }
