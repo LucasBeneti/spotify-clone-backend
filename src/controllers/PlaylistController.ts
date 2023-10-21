@@ -34,3 +34,32 @@ export const deletePlaylist = async ({
         console.error('Error while trying to delete a playlist.', error);
     }
 };
+
+export const addSongToPlaylist = async ({
+    song_id,
+    playlist_id,
+}: {
+    song_id: number;
+    playlist_id: number;
+}) => {
+    try {
+        const response = database('playlist_songs').insert({
+            song_id,
+            playlist_id,
+        });
+        return response;
+    } catch (error) {
+        console.error('Error while trying to add song to playlist.', error);
+    }
+};
+
+// TODO get all songs in a specific playlist by id
+export const getPlaylistSongs = async (playlist_id: number) => {
+    try {
+        const songs = await database('songs')
+            .join('playlist_songs', 'songs.id', '=', 'playlist_songs.song_id')
+            .select('songs.name', 'songs.id', 'songs.author.id');
+
+        return songs;
+    } catch (error) {}
+};

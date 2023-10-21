@@ -19,6 +19,22 @@ export async function playlistRoutes(fastify: FastifyInstance) {
         }
     );
 
+    // TODO needs test
+    fastify.get(
+        '/songs/:id',
+        async (
+            request: FastifyRequest<{ Params: { id: number } }>,
+            reply: FastifyReply
+        ) => {
+            const { id } = request.params;
+            const playlist_songs = await PlaylistController.getPlaylistSongs(
+                id
+            );
+
+            reply.status(200).send({ playlist_songs });
+        }
+    );
+
     fastify.post(
         '/:id',
         async (
