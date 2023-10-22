@@ -22,6 +22,15 @@ export const getSongsByArtistId = async (artist_id: number) => {
     }
 };
 
+export const fuzzyFind = async (q: string) => {
+    try {
+        const songs = database('songs')
+            .whereRaw('name % ?', q)
+            .select('name', 'author_id', 'album_id');
+        return songs;
+    } catch (error) {}
+};
+
 export const create = async (songData: NewSong[]) => {
     try {
         const songsToAdd = songData.map((song) => {
@@ -40,3 +49,5 @@ export const create = async (songData: NewSong[]) => {
         console.error('Error while adding new song.', error);
     }
 };
+
+export default { fuzzyFind, create, getSong, getSongsByArtistId };
