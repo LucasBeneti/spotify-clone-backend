@@ -25,9 +25,18 @@ export type Album = {
 export type Song = {
     id: string;
     name: string;
-    author: Artist;
-    album?: Album;
-    song_link: string;
+    author_id: number;
+    album_id?: number;
+    source_link: string;
     position_on_album?: number;
+    cover_art?: string;
+};
+
+export type NewSong = {
+    name: string;
+    author_id: number;
+    album_id: number;
+    source_link: string;
+    position_on_album: number;
     cover_art?: string;
 };
