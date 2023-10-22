@@ -10,7 +10,17 @@ export const getSong = async (song_id: number) => {
     }
 };
 
-// TODO get songs by artist_id
+export const getSongsByArtistId = async (artist_id: number) => {
+    try {
+        const artistSongs = database('songs').where({ author_id: artist_id });
+        return artistSongs;
+    } catch (error) {
+        console.error(
+            'Error while trying to fetch song from an artists.',
+            error
+        );
+    }
+};
 
 export const create = async (songData: NewSong[]) => {
     try {

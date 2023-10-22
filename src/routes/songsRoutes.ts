@@ -10,34 +10,43 @@ export async function songRoutes(fastify: FastifyInstance) {
             reply: FastifyReply
         ) => {
             const { id } = request.params;
-            const song = SongController.getSong(id);
+            const song = await SongController.getSong(id);
 
             reply.status(200).send({ song });
         }
     );
 
-    fastify.post(
-        '/add_song',
+    fastify.get(
+        '/artist/:artist_id',
         async (
-            request: FastifyRequest<{ Body: NewSong }>,
+            request: FastifyRequest<{ Params: { artist_id: number } }>,
             reply: FastifyReply
         ) => {
-            const {
-                name,
-                author_id,
-                album_id,
-                source_link,
-                position_on_album,
-            } = request.body;
-            const song = SongController.create([
-                {
-                    name,
-                    album_id,
-                    author_id,
-                    source_link,
-                    position_on_album,
-                },
-            ]);
+            const { artist_id } = request.params;
+            const artistSongs = await SongController.getSongsByArtistId(
+                artist_id
+            );
+
+            reply.status(200).send({ artistSongs });
+        }
+    );
+
+    fastify.post(
+        '/add_songs',
+        async (
+            request: FastifyRequest<{ Body: NewSong[] }>,
+            reply: FastifyReply
+        ) => {
+            const songsToAdd = request.body.map((song) => {
+                return {
+                    name: song.name,
+                    author_id: song.author_id,
+                    album_id: song.album_id,
+                    source_link: song.source_link,
+                    position_on_album: song.position_on_album,
+                };
+            });
+            const song = await SongController.create(songsToAdd);
 
             reply.status(201).send({ song });
         }
