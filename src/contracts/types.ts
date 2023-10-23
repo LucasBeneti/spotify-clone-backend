@@ -1,42 +1,42 @@
 export type PlaylistType = {
-    name: string;
-    author_id: number;
+  name: string;
+  author_id: number;
 };
 export type User = {
-    id: string;
-    username: string;
-    playlists?: PlaylistType[];
-    following?: Artist[] | User[];
+  id: string;
+  username: string;
+  playlists?: PlaylistType[];
+  following?: Artist[] | User[];
 };
 
 export type Artist = {
-    id: string;
-    name: string;
-    albums?: Album[];
+  id: string;
+  name: string;
+  albums?: Album[];
 };
 
 export type Album = {
-    id: string;
-    name: string;
-    author: Artist;
-    tracks: Song[];
+  id: string;
+  name: string;
+  author: Artist;
+  tracks: Song[];
 };
 
 export type Song = {
-    id: string;
-    name: string;
-    author_id: number;
-    album_id?: number;
-    source_link: string;
-    position_on_album?: number;
-    cover_art?: string;
+  id: string;
+  name: string;
+  author_id: number;
+  album_id?: number;
+  source_link: string;
+  position_on_album?: number;
+  cover_art?: string;
 };
 
 export type NewSong = {
-    name: string;
-    author_id: number;
-    album_id: number;
-    source_link: string;
-    position_on_album: number;
-    cover_art?: string;
+  name: string;
+  author_id: number;
+  album_id: number;
+  source_link: string;
+  position_on_album: number;
+  cover_art?: string;
 };
