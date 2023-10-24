@@ -10,7 +10,8 @@ export async function up(knex: Knex): Promise<void> {
       .notNullable()
       .onDelete("CASCADE");
 
-    table.date("launch_date");
+    table.date("launch_date").notNullable();
+    table.text("cover_art");
 
     table.timestamp("created_at").defaultTo(knex.fn.now());
     table.timestamp("updated_at").defaultTo(knex.fn.now());

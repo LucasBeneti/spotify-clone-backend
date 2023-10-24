@@ -10,7 +10,8 @@ export async function up(knex: Knex): Promise<void> {
       .references("artists.id")
       .notNullable()
       .onDelete("CASCADE");
-
+    table.text("source_link").notNullable();
+    table.integer("position_on_album").notNullable().defaultTo(1);
     table.timestamp("created_at").defaultTo(knex.fn.now());
     table.timestamp("updated_at").defaultTo(knex.fn.now());
   });
