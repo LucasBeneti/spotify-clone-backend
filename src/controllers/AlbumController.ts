@@ -21,6 +21,17 @@ export const getAlbumsByArtistId = async (artist_id: number) => {
   }
 };
 
+export const fuzzyFind = async (q: string) => {
+  try {
+    const albums = database("albums")
+      .whereRaw("name % ?", q)
+      .select("id", "name", "author_id", "launch_date");
+    return albums;
+  } catch (error) {
+    console.error("Error while trying to run the fuzzy search.", error);
+  }
+};
+
 type NewAlbum = {
   name: string;
   author_id: number;

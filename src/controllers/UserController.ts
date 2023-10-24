@@ -47,7 +47,6 @@ export const followArtist = async ({
   }
 };
 
-// TODO unfollow artist (don't know which verb)
 export const unfollowArtist = async ({
   user_id,
   artist_id,

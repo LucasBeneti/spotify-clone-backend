@@ -12,7 +12,7 @@ export const getSong = async (song_id: number) => {
 
 export const getSongsByArtistId = async (artist_id: number) => {
   try {
-    const artistSongs = database("songs").where({ author_id: artist_id });
+    const artistSongs = await database("songs").where({ author_id: artist_id });
     return artistSongs;
   } catch (error) {
     console.error("Error while trying to fetch song from an artists.", error);
@@ -21,9 +21,9 @@ export const getSongsByArtistId = async (artist_id: number) => {
 
 export const fuzzyFind = async (q: string) => {
   try {
-    const songs = database("songs")
+    const songs = await database("songs")
       .whereRaw("name % ?", q)
-      .select("name", "author_id", "album_id");
+      .select("id", "name", "author_id", "album_id");
     return songs;
   } catch (error) {
     console.error("Error while trying to run the fuzzy search.", error);
