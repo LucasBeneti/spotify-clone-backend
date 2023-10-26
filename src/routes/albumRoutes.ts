@@ -15,6 +15,18 @@ export async function albumRoutes(fastify: FastifyInstance) {
   );
 
   fastify.get(
+    "/songs/:id",
+    async (
+      request: FastifyRequest<{ Params: { id: number } }>,
+      reply: FastifyReply
+    ) => {
+      const { id } = request.params;
+      const albumSongs = await AlbumController.getAlbumSongsById(id);
+      reply.status(200).send({ albumSongs });
+    }
+  );
+
+  fastify.get(
     "/artist/:artist_id",
     async (
       request: FastifyRequest<{ Params: { artist_id: number } }>,

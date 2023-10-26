@@ -19,7 +19,6 @@ export async function playlistRoutes(fastify: FastifyInstance) {
     }
   );
 
-  // TODO needs test
   fastify.get(
     "/songs/:id",
     async (

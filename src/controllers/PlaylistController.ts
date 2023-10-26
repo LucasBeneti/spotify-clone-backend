@@ -78,9 +78,7 @@ export const deleteSongFromPlaylist = async ({
   }
 };
 
-// TODO get all songs in a specific playlist by id
 export const getPlaylistSongs = async (playlist_id: number) => {
-  //SELECT songs.* FROM songs INNER JOIN playlist_songs ON songs.id = playlist_songs.song_id WHERE playlist_songs.playlist_id = 1;
   try {
     const songs = await database("songs")
       .from("songs")

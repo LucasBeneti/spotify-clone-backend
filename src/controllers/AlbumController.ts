@@ -9,6 +9,29 @@ export const getAlbum = async (album_id: number) => {
   }
 };
 
+export const getAlbumSongsById = async (album_id: number) => {
+  try {
+    const albumSongs = database("songs")
+      .from("songs")
+      .join("albums", "albums.id", "=", "songs.album_id")
+      .where("albums.id", album_id)
+      .select(
+        "songs.name",
+        "songs.id",
+        "songs.author_id",
+        "songs.position_on_album",
+        "songs.source_link"
+      );
+
+    return albumSongs;
+  } catch (error) {
+    console.error(
+      "Error while trying to fetch songs from specific album.",
+      error
+    );
+  }
+};
+
 export const getAlbumsByArtistId = async (artist_id: number) => {
   try {
     const artistAlbums = await database("albums").where({
