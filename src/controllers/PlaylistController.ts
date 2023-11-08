@@ -1,7 +1,21 @@
 import database from "../database";
 import { PlaylistType } from "../contracts/types";
 
-export const listByUserId = async ({ user_id }: { user_id: number }) => {
+export const getPlaylistById = async (playlist_id: number) => {
+  try {
+    const playlist = await database("playlists")
+      .where({
+        id: playlist_id,
+      })
+      .select("*");
+
+    return playlist;
+  } catch (error) {
+    console.error("error", error);
+  }
+};
+
+export const getPlaylistsByUserId = async (user_id: number) => {
   try {
     const playlists = await database("playlists").where({
       author_id: user_id,
@@ -12,14 +26,24 @@ export const listByUserId = async ({ user_id }: { user_id: number }) => {
   }
 };
 
-export const create = async ({ name, author_id }: PlaylistType) => {
+export const create = async ({
+  name,
+  author_id,
+}: PlaylistType): Promise<
+  { name?: string; playlist_id?: number } | undefined
+> => {
   try {
-    await database("playlists").insert({
-      name,
-      author_id,
-    });
+    const [createdPlaylist] = await database("playlists").insert(
+      {
+        name,
+        author_id,
+      },
+      ["id", "name"]
+    );
+
+    return { name: createdPlaylist.name, playlist_id: createdPlaylist.id };
   } catch (error) {
-    console.error("Error while trying to create new playlist.", error);
+    console.error("Error on CREATE playlist.", error);
   }
 };
 
@@ -52,15 +76,20 @@ export const addSongToPlaylist = async ({
 }: {
   song_id: number;
   playlist_id: number;
-}) => {
+}): Promise<{ playlist_id: number } | undefined> => {
   try {
-    const response = database("playlist_songs").insert({
-      song_id,
-      playlist_id,
-    });
+    const [response] = await database("playlist_songs").insert(
+      {
+        song_id,
+        playlist_id,
+      },
+      ["song_id", "playlist_id"]
+    );
     return response;
   } catch (error) {
-    console.error("Error while trying to add song to playlist.", error);
+    throw new Error(
+      `Error while trying to add song (song ID ${song_id}) to playlist with ID ${playlist_id}.`
+    );
   }
 };
 
@@ -72,7 +101,10 @@ export const deleteSongFromPlaylist = async ({
   playlist_id: number;
 }) => {
   try {
-    await database("playlist_songs").where({ song_id, playlist_id }).del();
+    const deletedResponse = await database("playlist_songs")
+      .where({ song_id, playlist_id })
+      .del();
+    return deletedResponse;
   } catch (error) {
     console.error("Error while trying to delete songs from playlist.", error);
   }
