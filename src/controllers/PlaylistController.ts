@@ -113,10 +113,20 @@ export const deleteSongFromPlaylist = async ({
 export const getPlaylistSongs = async (playlist_id: number) => {
   try {
     const songs = await database("songs")
+      .select(
+        "songs.name",
+        "songs.id",
+        "songs.author_id",
+        "songs.album_id",
+        "playlist_songs.added_at",
+        "artists.name AS artist_name",
+        "albums.name AS album_name"
+      )
       .from("songs")
       .join("playlist_songs", "songs.id", "=", "playlist_songs.song_id")
-      .where("playlist_songs.playlist_id", playlist_id)
-      .select("songs.name", "songs.id", "songs.author_id");
+      .leftJoin("artists", "artists.id", "songs.author_id")
+      .leftJoin("albums", "albums.id", "songs.album_id")
+      .where("playlist_songs.playlist_id", playlist_id);
 
     return songs;
   } catch (error) {

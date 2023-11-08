@@ -12,6 +12,8 @@ export async function up(knex: Knex): Promise<void> {
       .references("songs.id")
       .notNullable()
       .onDelete("CASCADE");
+
+    table.timestamp("added_at").defaultTo(knex.fn.now());
   });
 }
 
