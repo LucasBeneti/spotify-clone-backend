@@ -17,7 +17,9 @@ export async function playlistRoutes(fastify: FastifyInstance) {
       reply: FastifyReply
     ) => {
       const { playlist_id } = request.params;
-      const playlists = await PlaylistController.getPlaylistById(playlist_id);
+      const playlists = await PlaylistController.getPlaylistInfoById(
+        playlist_id
+      );
 
       reply.status(200).send({ playlists });
     }
@@ -47,7 +49,7 @@ export async function playlistRoutes(fastify: FastifyInstance) {
       const { id } = request.params;
       const playlist_songs = await PlaylistController.getPlaylistSongs(id);
 
-      reply.status(200).send({ playlist_songs });
+      reply.status(200).send({ songs: playlist_songs });
     }
   );
 
@@ -79,6 +81,52 @@ export async function playlistRoutes(fastify: FastifyInstance) {
       } catch (error) {
         console.error("POST error while trying to create a playlist.", error);
         reply.status(500).send({ error });
+      }
+    }
+  );
+
+  fastify.post(
+    "/like",
+    async (
+      request: FastifyRequest<{
+        Body: { playlist_id: number; user_id: number };
+      }>,
+      reply: FastifyReply
+    ) => {
+      const { playlist_id, user_id } = request.body;
+
+      try {
+        await PlaylistController.likePlaylist(playlist_id, user_id);
+
+        return reply
+          .status(200)
+          .send({ message: "Successfully liked the playlist." });
+      } catch (error) {
+        console.error(
+          `Error while trying to like a playlsit with ID ${playlist_id}}`,
+          error
+        );
+      }
+    }
+  );
+
+  fastify.delete(
+    "/dislike",
+    async (
+      request: FastifyRequest<{
+        Body: { playlist_id: number; user_id: number };
+      }>,
+      reply: FastifyReply
+    ) => {
+      const { playlist_id, user_id } = request.body;
+      try {
+        await PlaylistController.dislikePlaylist(playlist_id, user_id);
+        return reply.status(200).send({ message: "Successful dislike." });
+      } catch (error) {
+        console.error(
+          `Error while trying to dislike a playlsit with ID ${playlist_id}`,
+          error
+        );
       }
     }
   );
@@ -152,12 +200,15 @@ export async function playlistRoutes(fastify: FastifyInstance) {
       }>,
       reply: FastifyReply
     ) => {
+      const { id } = request.params;
       try {
-        const { id } = request.params;
         await PlaylistController.deletePlaylist({ playlist_id: id });
         reply.status(200);
       } catch (error) {
-        console.error("Error while trying to delete a playlist", error);
+        console.error(
+          `Error while trying to delete a playlist with ID ${id}`,
+          error
+        );
       }
     }
   );

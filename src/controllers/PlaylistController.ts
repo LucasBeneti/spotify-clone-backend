@@ -1,17 +1,47 @@
 import database from "../database";
 import { PlaylistType } from "../contracts/types";
 
-export const getPlaylistById = async (playlist_id: number) => {
+export const getPlaylistInfoById = async (playlist_id: number) => {
   try {
-    const playlist = await database("playlists")
-      .where({
-        id: playlist_id,
-      })
-      .select("*");
+    const playlistInfo = await database("playlists")
+      .select("playlists.name", "users.username AS author_username")
+      .leftJoin("users", "playlists.author_id", "=", "users.id")
+      .where("playlists.id", playlist_id);
 
-    return playlist;
+    const fullInfo = {
+      cover_src:
+        "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
+      name: playlistInfo[0].name,
+      author: playlistInfo[0].author_username,
+    };
+
+    return fullInfo;
   } catch (error) {
     console.error("error", error);
+  }
+};
+
+export const getPlaylistSongs = async (playlist_id: number) => {
+  try {
+    const songs = await database("songs")
+      .select(
+        "songs.name",
+        "songs.id",
+        "songs.author_id",
+        "songs.album_id",
+        "playlist_songs.added_at",
+        "artists.name AS artist_name",
+        "albums.name AS album_name"
+      )
+      .from("songs")
+      .join("playlist_songs", "songs.id", "=", "playlist_songs.song_id")
+      .leftJoin("artists", "artists.id", "songs.author_id")
+      .leftJoin("albums", "albums.id", "songs.album_id")
+      .where("playlist_songs.playlist_id", playlist_id);
+
+    return songs;
+  } catch (error) {
+    console.error("Error while trying to fetch songs from playlist.", error);
   }
 };
 
@@ -44,6 +74,30 @@ export const create = async ({
     return { name: createdPlaylist.name, playlist_id: createdPlaylist.id };
   } catch (error) {
     console.error("Error on CREATE playlist.", error);
+  }
+};
+
+export const likePlaylist = async (playlist_id: number, user_id: number) => {
+  try {
+    await database("liked_playlists_users").insert({ playlist_id, user_id });
+  } catch (error) {
+    console.error(
+      `Error while trying to like a playlsit with ID ${playlist_id}`,
+      error
+    );
+  }
+};
+
+export const dislikePlaylist = async (playlist_id: number, user_id: number) => {
+  try {
+    await database("liked_playlists_users")
+      .where({ playlist_id, user_id })
+      .del();
+  } catch (error) {
+    console.error(
+      `Error while trying to unlike a playlsit with ID ${playlist_id}`,
+      error
+    );
   }
 };
 
@@ -107,29 +161,5 @@ export const deleteSongFromPlaylist = async ({
     return deletedResponse;
   } catch (error) {
     console.error("Error while trying to delete songs from playlist.", error);
-  }
-};
-
-export const getPlaylistSongs = async (playlist_id: number) => {
-  try {
-    const songs = await database("songs")
-      .select(
-        "songs.name",
-        "songs.id",
-        "songs.author_id",
-        "songs.album_id",
-        "playlist_songs.added_at",
-        "artists.name AS artist_name",
-        "albums.name AS album_name"
-      )
-      .from("songs")
-      .join("playlist_songs", "songs.id", "=", "playlist_songs.song_id")
-      .leftJoin("artists", "artists.id", "songs.author_id")
-      .leftJoin("albums", "albums.id", "songs.album_id")
-      .where("playlist_songs.playlist_id", playlist_id);
-
-    return songs;
-  } catch (error) {
-    console.error("Error while trying to fetch songs from playlist.", error);
   }
 };
