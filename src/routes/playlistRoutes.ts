@@ -1,4 +1,5 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
+import { getAuth } from "@clerk/fastify";
 import * as PlaylistController from "../controllers/PlaylistController";
 
 function errorMessage(
@@ -10,6 +11,13 @@ function errorMessage(
 }
 
 export async function playlistRoutes(fastify: FastifyInstance) {
+  fastify.addHook("preHandler", async (request, reply) => {
+    const { userId } = getAuth(request);
+    if (!userId) {
+      reply.status(401).send({ erroMessage: "Unauthorized." });
+    }
+  });
+
   fastify.get(
     "/:playlist_id",
     async (

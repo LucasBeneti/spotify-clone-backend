@@ -2,6 +2,19 @@ import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 import * as UserController from "../controllers/UserController";
 
 export async function userRoutes(fastify: FastifyInstance) {
+  // fastify.get(
+  //   "/auth",
+  //   async (
+  //     request: FastifyRequest<{ Body: { username: string } }>,
+  //     reply: FastifyReply
+  //   ) => {
+  //     try {
+  //       const { username } = request.body;
+  //       // const
+  //     } catch (error) {}
+  //   }
+  // );
+
   fastify.get(
     "/:id",
     async (

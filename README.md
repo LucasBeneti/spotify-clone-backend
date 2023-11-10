@@ -52,3 +52,19 @@ Format the front-end wants for the playlist data:
   ],
 }```
 ````
+
+### Auth implementation
+
+The auth implementation is pretty straight forward. We only need to register the `clerkPlugin` on the top-level server file and we're good to use the auth wherever. One small detail was that, at first I was trying to implement the auth check on `onResponse` hook, but turns out specifically this hook was too high up in the lifecycle tree, so the it appeared that before the plugin registering took place, the `onResponse` hook was already being called and it was throwing an error saying the register should happen before the auth function use. So I added the auth verification on another hook, called `preHandler`, that would be called right after the validation and parsing of the request, but before the handler for the request. Just like the code snippet below:
+
+```typescript
+  export async function playlistRoutes(fastify: FastifyInstance) {
+    fastify.addHook("preHandler", async (request, reply) => {
+      const { userId } = getAuth(request);
+      if (!userId) {
+        reply.status(401).send({ erroMessage: "Unauthorized." });
+      }
+    });
+
+  // rest of the playlist routes...
+```

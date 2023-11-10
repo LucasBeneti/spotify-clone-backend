@@ -1,25 +1,27 @@
 {
-    "name": "spotify-clone-backend",
-    "version": "1.0.0",
-    "description": "",
-    "main": "index.js",
-    "scripts": {
-        "start": "npm run build && node dist/src/server.js",
-        "build": "tsc -p tsconfig.json"
-    },
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-        "dotenv": "^16.3.1",
-        "fastify": "^4.23.2",
-        "knex": "^3.0.1",
-        "pg": "^8.11.3"
-    },
-    "devDependencies": {
-        "@types/node": "^20.8.2",
-        "@types/pg": "^8.10.3",
-        "pino-pretty": "^10.2.3",
-        "ts-node": "^10.9.1",
-        "typescript": "^5.2.2"
-    }
+  "name": "spotify-clone-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run build && node dist/src/server.js --env-file=.env",
+    "build": "tsc -p tsconfig.json"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@clerk/fastify": "^0.6.21",
+    "@fastify/cors": "^8.4.1",
+    "dotenv": "^16.3.1",
+    "fastify": "^4.23.2",
+    "knex": "^3.0.1",
+    "pg": "^8.11.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.2",
+    "@types/pg": "^8.10.3",
+    "pino-pretty": "^10.2.3",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  }
 }
