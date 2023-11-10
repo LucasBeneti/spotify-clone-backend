@@ -1,44 +1,38 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
+import { getAuth } from "@clerk/fastify";
+
 import * as UserController from "../controllers/UserController";
 
 export async function userRoutes(fastify: FastifyInstance) {
-  // fastify.get(
-  //   "/auth",
-  //   async (
-  //     request: FastifyRequest<{ Body: { username: string } }>,
-  //     reply: FastifyReply
-  //   ) => {
-  //     try {
-  //       const { username } = request.body;
-  //       // const
-  //     } catch (error) {}
-  //   }
-  // );
+  fastify.addHook("preHandler", async (request, reply) => {
+    const { userId } = getAuth(request);
+    if (!userId) {
+      reply.status(401).send({ erroMessage: "Unauthorized." });
+    }
+  });
 
   fastify.get(
-    "/:id",
+    "/:username",
     async (
-      request: FastifyRequest<{ Params: { id: number } }>,
+      request: FastifyRequest<{ Params: { username: string } }>,
       reply: FastifyReply
     ) => {
-      console.log("USER GET");
-
-      const { id } = request.params;
-      const userInfo = await UserController.getUserInfo({ user_id: id });
-
-      reply.status(200).send({ userInfo });
+      const { userId } = getAuth(request);
+      reply.status(201).send({ userId });
     }
   );
 
   fastify.post(
     "/",
-    async (
-      request: FastifyRequest<{ Body: { username: string } }>,
-      reply: FastifyReply
-    ) => {
-      const { username } = request.body;
-      const response = await UserController.create({ username });
-      reply.status(201).send({ response });
+    async (request: FastifyRequest<{ Body: string }>, reply: FastifyReply) => {
+      const { userId } = getAuth(request);
+      const { username } = JSON.parse(request.body);
+      const userToCreate = {
+        username,
+        clerkUserId: userId!,
+      };
+      const response = await UserController.create(userToCreate);
+      return reply.status(201).send({ response });
     }
   );
 

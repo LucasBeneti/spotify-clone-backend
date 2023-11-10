@@ -29,7 +29,7 @@ export async function playlistRoutes(fastify: FastifyInstance) {
         playlist_id
       );
 
-      reply.status(200).send({ playlists });
+      return reply.status(200).send({ playlists });
     }
   );
 
