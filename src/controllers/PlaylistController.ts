@@ -59,6 +59,7 @@ export const getPlaylistsByUserId = async (user_id: number) => {
 export const create = async ({
   name,
   author_id,
+  is_liked_songs_playlist,
 }: PlaylistType): Promise<
   { name?: string; playlist_id?: number } | undefined
 > => {
@@ -67,6 +68,7 @@ export const create = async ({
       {
         name,
         author_id,
+        is_liked_songs_playlist, // TODO check if this will break the feature
       },
       ["id", "name"]
     );

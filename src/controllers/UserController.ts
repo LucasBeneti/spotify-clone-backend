@@ -1,5 +1,6 @@
 import database from "../database";
 import type { User } from "../contracts/types";
+import * as PlaylistController from "./PlaylistController";
 
 export const getUserInfo = async (username: string) => {
   try {
@@ -27,6 +28,13 @@ export const create = async (newUserDTO: {
         username: newUserDTO.username,
         clerk_user_id: newUserDTO.clerkUserId,
         last_login: database.fn.now(),
+      });
+
+      // creating the Liked songs playlist (every user has one)
+      await PlaylistController.create({
+        name: "Liked Songs",
+        author_id: newUserDTO.clerkUserId,
+        is_liked_songs_playlist: true,
       });
       return newUser;
     } else {

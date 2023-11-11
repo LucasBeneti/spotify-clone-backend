@@ -65,17 +65,16 @@ export async function playlistRoutes(fastify: FastifyInstance) {
     "/:id",
     async (
       request: FastifyRequest<{
-        Params: { id: number };
         Body: { name: string };
       }>,
       reply: FastifyReply
     ) => {
       try {
-        const { id } = request.params;
+        const { userId } = getAuth(request);
         const { name } = request.body;
         const createdResponse = await PlaylistController.create({
           name,
-          author_id: id,
+          author_id: userId!,
         });
 
         if (!createdResponse) {
