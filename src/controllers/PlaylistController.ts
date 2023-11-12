@@ -4,11 +4,16 @@ import { PlaylistType } from "../contracts/types";
 export const getPlaylistInfoById = async (playlist_id: number) => {
   try {
     const playlistInfo = await database("playlists")
-      .select("playlists.name", "users.username AS author_username")
+      .select(
+        "playlists.name",
+        "playlists.id",
+        "users.username AS author_username"
+      )
       .leftJoin("users", "playlists.author_id", "=", "users.id")
       .where("playlists.id", playlist_id);
 
     const fullInfo = {
+      playlist_id: playlistInfo[0].id,
       cover_src:
         "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
       name: playlistInfo[0].name,
@@ -143,8 +148,11 @@ export const addSongToPlaylist = async ({
     );
     return response;
   } catch (error) {
+    // TODO checar de logar esse error dependendo de status, por exemplo a parada
+    // de violar unique contraint meio que pode ser ignorado (apenas caso haja um bug
+    // mais complexo)
     throw new Error(
-      `Error while trying to add song (song ID ${song_id}) to playlist with ID ${playlist_id}.`
+      `Error while trying to add song (song ID ${song_id}) to playlist with ID ${playlist_id}. ERROR: ${error}`
     );
   }
 };

@@ -1,7 +1,7 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 import { getAuth } from "@clerk/fastify";
 
-import * as UserController from "../controllers/UserController";
+import UserController from "../controllers/UserController";
 
 export async function userRoutes(fastify: FastifyInstance) {
   fastify.addHook("preHandler", async (request, reply) => {
@@ -74,6 +74,47 @@ export async function userRoutes(fastify: FastifyInstance) {
         reply.status(204);
       } catch (error) {
         console.error("Error while attempting to unfollow an artists", error);
+      }
+    }
+  );
+
+  fastify.post(
+    "/song/like/:song_id",
+    async (
+      request: FastifyRequest<{
+        Params: { song_id: number };
+      }>,
+      reply: FastifyReply
+    ) => {
+      try {
+        const { song_id } = request.params;
+        const { userId } = getAuth(request);
+        await UserController.likeSong(song_id, userId!);
+
+        reply.status(200);
+      } catch (error) {
+        console.error("Error while attempting to like a song.", error);
+      }
+    }
+  );
+
+  fastify.delete(
+    "/song/dislike/:song_id",
+    async (
+      request: FastifyRequest<{
+        Params: { song_id: number };
+      }>,
+      reply: FastifyReply
+    ) => {
+      try {
+        const { song_id } = request.params;
+        const { userId } = getAuth(request);
+        await UserController.dislikeSong(song_id, userId!);
+
+        reply.status(200);
+      } catch (error) {
+        console.error("Error while attempting to like a song.", error);
+        reply.status(404);
       }
     }
   );
