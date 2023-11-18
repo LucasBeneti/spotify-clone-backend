@@ -9,7 +9,7 @@ export const getPlaylistInfoById = async (playlist_id: number) => {
         "playlists.id",
         "users.username AS author_username"
       )
-      .leftJoin("users", "playlists.author_id", "=", "users.id")
+      .leftJoin("users", "playlists.author_id", "=", "users.clerk_user_id")
       .where("playlists.id", playlist_id);
 
     const fullInfo = {
@@ -50,12 +50,18 @@ export const getPlaylistSongs = async (playlist_id: number) => {
   }
 };
 
-export const getPlaylistsByUserId = async (user_id: number) => {
+export const getPlaylistsByUserId = async (user_id: string) => {
   try {
-    const playlists = await database("playlists").where({
-      author_id: user_id,
-    });
-    return playlists;
+    const playlistInfo = await database("playlists")
+      .select(
+        "playlists.name",
+        "playlists.id",
+        "playlists.updated_at",
+        "users.username AS author_username"
+      )
+      .leftJoin("users", "playlists.author_id", "=", "users.clerk_user_id")
+      .where("playlists.author_id", user_id);
+    return playlistInfo;
   } catch (error) {
     console.error("error", error);
   }
@@ -146,6 +152,11 @@ export const addSongToPlaylist = async ({
       },
       ["song_id", "playlist_id"]
     );
+
+    // TODO this have to be tested yet
+    await database("playlists")
+      .where({ id: playlist_id })
+      .update("updated_at", database.fn.now());
     return response;
   } catch (error) {
     // TODO checar de logar esse error dependendo de status, por exemplo a parada

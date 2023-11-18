@@ -14,6 +14,13 @@ export async function up(knex: Knex): Promise<void> {
       .onDelete("CASCADE");
 
     table.timestamp("added_at").defaultTo(knex.fn.now());
+
+    // This unique contraint here should be added on the table creation
+    // since it would handle the conflict
+    // table.unique(["playlist_id", "song_id"], {
+    //   indexName: "unique_song_playlist_pair_index",
+    //   useConstraint: true,
+    // });
   });
 }
 

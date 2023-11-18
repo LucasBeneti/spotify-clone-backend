@@ -25,28 +25,24 @@ export async function playlistRoutes(fastify: FastifyInstance) {
       reply: FastifyReply
     ) => {
       const { playlist_id } = request.params;
-      const playlists = await PlaylistController.getPlaylistInfoById(
+      const playlistInfo = await PlaylistController.getPlaylistInfoById(
         playlist_id
       );
 
-      return reply.status(200).send({ playlists });
+      return reply.status(200).send({ playlistInfo });
     }
   );
 
-  fastify.get(
-    "/user/:user_id",
-    async (
-      request: FastifyRequest<{ Params: { user_id: number } }>,
-      reply: FastifyReply
-    ) => {
-      const { user_id } = request.params;
-      const userPlaylists = await PlaylistController.getPlaylistsByUserId(
-        user_id
-      );
-
-      reply.status(200).send({ userPlaylists });
+  fastify.get("/user", async (request: FastifyRequest, reply: FastifyReply) => {
+    const { userId } = getAuth(request);
+    if (!userId) {
+      return reply.status(403).send({ error: "User not existent." });
     }
-  );
+
+    const userPlaylists = await PlaylistController.getPlaylistsByUserId(userId);
+
+    return reply.status(200).send({ userPlaylists });
+  });
 
   fastify.get(
     "/songs/:id",
