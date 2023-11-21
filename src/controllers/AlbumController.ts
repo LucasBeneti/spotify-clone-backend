@@ -2,7 +2,18 @@ import database from "../database";
 
 export const getAlbum = async (album_id: number) => {
   try {
-    const albumInfo = database("albums").where({ id: album_id });
+    const albumInfo = database("albums")
+      .leftJoin("artists", "albums.author_id", "=", "artists.id")
+      .where("albums.id", album_id)
+      .select(
+        "albums.cover_art",
+        "albums.name",
+        "albums.author_id",
+        "albums.launch_date",
+        "artists.name as author_name"
+      )
+      .first();
+
     return albumInfo;
   } catch (error) {
     console.error("Error while trying to fetch song information.", error);
@@ -14,13 +25,16 @@ export const getAlbumSongsById = async (album_id: number) => {
     const albumSongs = database("songs")
       .from("songs")
       .join("albums", "albums.id", "=", "songs.album_id")
+      .leftJoin("artists", "artists.id", "=", "songs.author_id")
       .where("albums.id", album_id)
       .select(
         "songs.name",
         "songs.id",
         "songs.author_id",
         "songs.position_on_album",
-        "songs.source_link"
+        "songs.source_link",
+        "artists.name AS artist_name",
+        "albums.cover_art"
       );
 
     return albumSongs;
