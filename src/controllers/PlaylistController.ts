@@ -90,6 +90,21 @@ export const create = async ({
   }
 };
 
+export const updatePlaylist = async (
+  updateData: { name?: string; description?: string },
+  playlist_id: number
+) => {
+  try {
+    const { name, description } = updateData;
+    const updatedPlaylist = await database("playlists")
+      .where("playlists.id", playlist_id)
+      .update({ name, description });
+    return updatedPlaylist;
+  } catch (error) {
+    console.error("Error while trying to update a playlist.", error);
+  }
+};
+
 export const likePlaylist = async (playlist_id: number, user_id: number) => {
   try {
     await database("liked_playlists_users").insert({ playlist_id, user_id });

@@ -1,6 +1,7 @@
 export type PlaylistType = {
   name: string;
   author_id: string;
+  description?: string;
   is_liked_songs_playlist?: boolean;
 };
 export type User = {

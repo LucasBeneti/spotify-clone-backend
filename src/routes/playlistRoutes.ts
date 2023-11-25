@@ -58,7 +58,7 @@ export async function playlistRoutes(fastify: FastifyInstance) {
   );
 
   fastify.post(
-    "/:id",
+    "/create_new",
     async (
       request: FastifyRequest<{
         Body: { name: string };
@@ -81,6 +81,41 @@ export async function playlistRoutes(fastify: FastifyInstance) {
         }
 
         return reply.status(201).send({ createdResponse });
+      } catch (error) {
+        console.error("POST error while trying to create a playlist.", error);
+        reply.status(500).send({ error });
+      }
+    }
+  );
+
+  fastify.put(
+    "/:id",
+    async (
+      request: FastifyRequest<{
+        Params: { id: number };
+        Body: string;
+      }>,
+      reply: FastifyReply
+    ) => {
+      try {
+        const { id } = request.params;
+        const { name, description } = JSON.parse(request.body);
+        const updateResponse = await PlaylistController.updatePlaylist(
+          {
+            name,
+            description,
+          },
+          id
+        );
+
+        if (!updateResponse) {
+          return reply.status(400).send({
+            errorMessage:
+              "Something went wrong while trying to create a new playlist.",
+          });
+        }
+
+        return reply.status(201).send({ updateResponse });
       } catch (error) {
         console.error("POST error while trying to create a playlist.", error);
         reply.status(500).send({ error });
