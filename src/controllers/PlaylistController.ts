@@ -7,6 +7,7 @@ export const getPlaylistInfoById = async (playlist_id: number) => {
       .select(
         "playlists.name",
         "playlists.id",
+        "playlists.description",
         "users.username AS author_username"
       )
       .leftJoin("users", "playlists.author_id", "=", "users.clerk_user_id")
@@ -17,6 +18,7 @@ export const getPlaylistInfoById = async (playlist_id: number) => {
       cover_src:
         "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
       name: playlistInfo[0].name,
+      description: playlistInfo[0].description,
       author: playlistInfo[0].author_username,
     };
 
@@ -69,6 +71,7 @@ export const getPlaylistsByUserId = async (user_id: string) => {
 
 export const create = async ({
   name,
+  description,
   author_id,
   is_liked_songs_playlist,
 }: PlaylistType): Promise<
@@ -78,6 +81,7 @@ export const create = async ({
     const [createdPlaylist] = await database("playlists").insert(
       {
         name,
+        description,
         author_id,
         is_liked_songs_playlist, // TODO check if this will break the feature
       },

@@ -58,18 +58,20 @@ export async function playlistRoutes(fastify: FastifyInstance) {
   );
 
   fastify.post(
-    "/create_new",
+    "/create",
     async (
       request: FastifyRequest<{
-        Body: { name: string };
+        Body: string;
       }>,
       reply: FastifyReply
     ) => {
       try {
         const { userId } = getAuth(request);
-        const { name } = request.body;
+        // TODO check error here due to body parsing issue
+        const { name, description } = JSON.parse(request.body);
         const createdResponse = await PlaylistController.create({
           name,
+          description,
           author_id: userId!,
         });
 
