@@ -73,7 +73,7 @@ export const create = async ({
   name,
   description,
   author_id,
-  is_liked_songs_playlist,
+  is_liked_songs_playlist = false,
 }: PlaylistType): Promise<
   { name?: string; playlist_id?: number } | undefined
 > => {
