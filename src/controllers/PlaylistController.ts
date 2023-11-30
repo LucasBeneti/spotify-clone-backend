@@ -136,8 +136,16 @@ export const dislikePlaylist = async (playlist_id: number, user_id: number) => {
 export const fuzzyFind = async (q: string) => {
   try {
     const playlists = await database("playlists")
-      .whereRaw("name % ?", q)
-      .select("id", "name", "author_id");
+      .orderByRaw("SIMILARITY(playlists.name, ?) DESC", q)
+      .limit(5)
+      .limit(5)
+      .leftJoin("users", "users.clerk_user_id", "=", "playlists.author_id")
+      .select(
+        "playlists.id",
+        "playlists.name",
+        "playlists.author_id",
+        "users.username AS playlist_owner"
+      );
     return playlists;
   } catch (error) {
     console.error("Error while trying to run the fuzzy search.", error);
@@ -202,4 +210,18 @@ export const deleteSongFromPlaylist = async ({
   } catch (error) {
     console.error("Error while trying to delete songs from playlist.", error);
   }
+};
+
+export default {
+  getPlaylistInfoById,
+  getPlaylistSongs,
+  getPlaylistsByUserId,
+  create,
+  updatePlaylist,
+  likePlaylist,
+  dislikePlaylist,
+  fuzzyFind,
+  deletePlaylist,
+  addSongToPlaylist,
+  deleteSongFromPlaylist,
 };

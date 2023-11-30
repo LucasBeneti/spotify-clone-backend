@@ -22,8 +22,19 @@ export const getSongsByArtistId = async (artist_id: number) => {
 export const fuzzyFind = async (q: string) => {
   try {
     const songs = await database("songs")
-      .whereRaw("name % ?", q)
-      .select("id", "name", "author_id", "album_id");
+      .orderByRaw("SIMILARITY(songs.name, ?) DESC", q)
+      .limit(5)
+      .leftJoin("artists", "artists.id", "=", "songs.author_id")
+      .leftJoin("albums", "albums.id", "=", "songs.album_id")
+      .select(
+        "songs.id",
+        "songs.name",
+        "songs.author_id",
+        "songs.album_id",
+        "artists.name AS author_name",
+        "albums.name AS album_name",
+        "albums.cover_art AS album_cover_art"
+      );
     return songs;
   } catch (error) {
     console.error("Error while trying to run the fuzzy search.", error);

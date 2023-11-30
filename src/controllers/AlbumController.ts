@@ -61,8 +61,15 @@ export const getAlbumsByArtistId = async (artist_id: number) => {
 export const fuzzyFind = async (q: string) => {
   try {
     const albums = database("albums")
-      .whereRaw("name % ?", q)
-      .select("id", "name", "author_id", "launch_date");
+      .whereRaw("? % ANY(STRING_TO_ARRAY(albums.name, ' '));", q)
+      .leftJoin("artists", "artists.id", "=", "albums.author_id")
+      .select(
+        "albums.id",
+        "albums.name",
+        "albums.author_id",
+        "albums.launch_date",
+        "artists.name AS author_name"
+      );
     return albums;
   } catch (error) {
     console.error("Error while trying to run the fuzzy search.", error);
@@ -88,4 +95,12 @@ export const create = async (albums: NewAlbum[]) => {
   } catch (error) {
     console.error("Error while adding new albums.", error);
   }
+};
+
+export default {
+  getAlbum,
+  getAlbumSongsById,
+  getAlbumsByArtistId,
+  fuzzyFind,
+  create,
 };
