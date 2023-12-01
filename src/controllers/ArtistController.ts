@@ -4,7 +4,7 @@ export const fuzzyFind = async (q: string) => {
   try {
     const artists = await database("artists")
       .orderByRaw("SIMILARITY(artists.name, ?) DESC", q)
-      .select("artists.id", "artists.name");
+      .select("artists.id", "artists.name", "artists.profile_image");
 
     return artists;
   } catch (error) {
