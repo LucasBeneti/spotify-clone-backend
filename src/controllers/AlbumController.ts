@@ -61,7 +61,8 @@ export const getAlbumsByArtistId = async (artist_id: number) => {
 export const fuzzyFind = async (q: string) => {
   try {
     const albums = database("albums")
-      .whereRaw("? % ANY(STRING_TO_ARRAY(albums.name, ' '));", q)
+      .orderByRaw("SIMILARITY(albums.name, ?) DESC", q)
+      .limit(5)
       .leftJoin("artists", "artists.id", "=", "albums.author_id")
       .select(
         "albums.id",
