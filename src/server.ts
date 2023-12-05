@@ -8,6 +8,7 @@ import { playlistRoutes } from "./routes/playlistRoutes";
 import { userRoutes } from "./routes/userRoutes";
 import { songRoutes } from "./routes/songsRoutes";
 import { albumRoutes } from "./routes/albumRoutes";
+import { artistRoutes } from "./routes/artistRoutes";
 
 const server = Fastify({
   logger: {
@@ -37,6 +38,7 @@ server.register(playlistRoutes, { prefix: "/playlist" });
 server.register(userRoutes, { prefix: "/user" });
 server.register(songRoutes, { prefix: "/songs" });
 server.register(albumRoutes, { prefix: "/albums" });
+server.register(artistRoutes, { prefix: "/artist" });
 
 server.listen({ port: PORT, host: "0.0.0.0" }, (err, address) => {
   database

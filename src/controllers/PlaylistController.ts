@@ -36,6 +36,7 @@ export const getPlaylistSongs = async (playlist_id: number) => {
         "songs.id",
         "songs.author_id",
         "songs.album_id",
+        "songs.duration",
         "playlist_songs.added_at",
         "artists.name AS artist_name",
         "albums.name AS album_name"

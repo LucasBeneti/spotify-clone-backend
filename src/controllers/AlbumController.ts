@@ -33,6 +33,7 @@ export const getAlbumSongsById = async (album_id: number) => {
         "songs.author_id",
         "songs.position_on_album",
         "songs.source_link",
+        "songs.duration",
         "artists.name AS artist_name",
         "albums.cover_art"
       );
@@ -48,9 +49,17 @@ export const getAlbumSongsById = async (album_id: number) => {
 
 export const getAlbumsByArtistId = async (artist_id: number) => {
   try {
-    const artistAlbums = await database("albums").where({
-      author_id: artist_id,
-    });
+    const artistAlbums = await database("albums")
+      .where({
+        author_id: artist_id,
+      })
+      .select(
+        "albums.id",
+        "albums.name",
+        "albums.cover_art",
+        "albums.author_id",
+        "albums.launch_date"
+      );
 
     return artistAlbums;
   } catch (error) {
