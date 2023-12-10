@@ -176,13 +176,13 @@ export async function playlistRoutes(fastify: FastifyInstance) {
     async (
       request: FastifyRequest<{
         Params: { playlist_id: number };
-        Body: { song_id: number };
+        Body: string;
       }>,
       reply: FastifyReply
     ) => {
       try {
         const { playlist_id } = request.params;
-        const { song_id } = request.body;
+        const { song_id } = JSON.parse(request.body);
 
         const addedSongToPlaylist = await PlaylistController.addSongToPlaylist({
           song_id,

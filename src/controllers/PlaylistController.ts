@@ -40,7 +40,8 @@ export const getPlaylistSongs = async (playlist_id: number) => {
         "songs.source_link",
         "playlist_songs.added_at",
         "artists.name AS artist_name",
-        "albums.name AS album_name"
+        "albums.name AS album_name",
+        "albums.cover_art"
       )
       .from("songs")
       .join("playlist_songs", "songs.id", "=", "playlist_songs.song_id")
