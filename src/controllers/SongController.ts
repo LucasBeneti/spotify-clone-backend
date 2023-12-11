@@ -31,9 +31,10 @@ export const fuzzyFind = async (q: string) => {
         "songs.name",
         "songs.author_id",
         "songs.album_id",
-        "artists.name AS author_name",
+        "songs.source_link",
+        "artists.name AS artist_name",
         "albums.name AS album_name",
-        "albums.cover_art AS album_cover_art"
+        "albums.cover_art"
       );
     return songs;
   } catch (error) {
