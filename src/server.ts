@@ -18,16 +18,16 @@ const server = Fastify({
   },
 });
 
-const PORT = 3000;
+const PORT = 4000;
 // Insomnia won't work with this config active
 server.register(cors, {
   origin: (origin, cb) => {
     const hostname = new URL(origin as string).hostname;
+    console.log("hostname", hostname);
     if (hostname === "localhost") {
       cb(null, true);
       return;
     }
-
     cb(new Error("Not allowed"), false);
   },
 });

@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run build && node dist/src/server.js --env-file=.env",
-    "build": "tsc -p tsconfig.json"
+    "build": "tsc -p tsconfig.json",
+    "preview": "node dist/src/server.js --env-file=.env"
   },
   "author": "",
   "license": "ISC",
