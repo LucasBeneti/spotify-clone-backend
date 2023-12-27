@@ -19,18 +19,22 @@ const server = Fastify({
 });
 
 const PORT = 4000;
-// Insomnia won't work with this config active
+
 server.register(cors, {
-  origin: (origin, cb) => {
-    const hostname = new URL(origin as string).hostname;
-    console.log("hostname", hostname);
-    if (hostname === "localhost") {
-      cb(null, true);
-      return;
-    }
-    cb(new Error("Not allowed"), false);
-  },
+  origin: "https://spotify-clone-side-proj.onrender.com",
+  methods: ["GET", "POST", "PUT", "DELETE"],
 });
+// server.register(cors, {
+//   origin: (origin, cb) => {
+//     const hostname = new URL(origin as string).hostname;
+//     console.log("hostname", hostname);
+//     if (hostname === "localhost") {
+//       cb(null, true);
+//       return;
+//     }
+//     cb(new Error("Not allowed"), false);
+//   },
+// });
 server.register(clerkPlugin);
 
 server.register(searchRoutes, { prefix: "/search" });
