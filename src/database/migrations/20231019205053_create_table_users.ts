@@ -5,6 +5,8 @@ export async function up(knex: Knex): Promise<void> {
     table.increments("id").primary();
     table.text("username").unique().notNullable();
     // table.integer("following_artist").references("artists.id");
+    table.text("clerk_user_id").unique();
+    table.timestamp("last_login");
 
     table.timestamp("created_at").defaultTo(knex.fn.now());
     table.timestamp("updated_at").defaultTo(knex.fn.now());

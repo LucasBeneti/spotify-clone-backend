@@ -2,9 +2,11 @@ import database from "../database";
 import type { User } from "../contracts/types";
 import * as PlaylistController from "./PlaylistController";
 
-export const getUserInfo = async (username: string) => {
+export const getUserInfo = async (userId: string) => {
   try {
-    const userInfo = await database("users").where({ username });
+    const userInfo = await database("users")
+      .where({ clerk_user_id: userId })
+      .first();
 
     return userInfo;
   } catch (error) {

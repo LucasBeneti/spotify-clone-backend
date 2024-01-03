@@ -12,8 +12,8 @@ export async function up(knex: Knex): Promise<void> {
       .onDelete("CASCADE");
     table.text("source_link").notNullable();
     table.integer("position_on_album").notNullable().defaultTo(1);
-    // table.integer("times_played").defaultTo(0);
-    // table.integer("duration").defaultTo(289);
+    table.integer("times_played").defaultTo(0);
+    table.integer("duration").defaultTo(289);
     table.timestamp("created_at").defaultTo(knex.fn.now());
     table.timestamp("updated_at").defaultTo(knex.fn.now());
   });

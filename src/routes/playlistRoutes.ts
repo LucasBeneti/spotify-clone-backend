@@ -113,7 +113,7 @@ export async function playlistRoutes(fastify: FastifyInstance) {
         if (!updateResponse) {
           return reply.status(400).send({
             errorMessage:
-              "Something went wrong while trying to create a new playlist.",
+              "Something went wrong while trying to update a playlist.",
           });
         }
 

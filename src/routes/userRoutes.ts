@@ -11,16 +11,14 @@ export async function userRoutes(fastify: FastifyInstance) {
     }
   });
 
-  fastify.get(
-    "/:username",
-    async (
-      request: FastifyRequest<{ Params: { username: string } }>,
-      reply: FastifyReply
-    ) => {
-      const { userId } = getAuth(request);
-      reply.status(201).send({ userId });
+  fastify.get("/", async (request: FastifyRequest, reply: FastifyReply) => {
+    const { userId } = getAuth(request);
+    if (!userId) {
+      return reply.status(403).send({ errorMessage: "Unauthorized access." });
     }
-  );
+    const userData = await UserController.getUserInfo(userId);
+    return reply.status(201).send({ data: userData });
+  });
 
   fastify.post(
     "/",
