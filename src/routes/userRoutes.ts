@@ -25,11 +25,14 @@ export async function userRoutes(fastify: FastifyInstance) {
     async (request: FastifyRequest<{ Body: string }>, reply: FastifyReply) => {
       const { userId } = getAuth(request);
       const { username } = JSON.parse(request.body);
+
       const userToCreate = {
         username,
         clerkUserId: userId!,
       };
+
       const response = await UserController.create(userToCreate);
+      // TODO check response to return the correct code and message
       return reply.status(201).send({ response });
     }
   );
