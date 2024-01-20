@@ -17,8 +17,6 @@ export async function searchRoutes(fastify: FastifyInstance) {
       request: FastifyRequest<{ Params: { q: string } }>,
       reply: FastifyReply
     ) => {
-      // TODO implement the fuzzy search here
-
       const { q } = request.params;
 
       const songs = await SongController.fuzzyFind(q);

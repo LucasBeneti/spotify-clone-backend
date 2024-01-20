@@ -6,15 +6,14 @@ export const getUserInfo = async (userId: string) => {
   try {
     const userInfo = await database("users")
       .where({ clerk_user_id: userId })
+      .select(["users.id", "users.username", "users.username"])
       .first();
-
     return userInfo;
   } catch (error) {
     console.error("GET User error", error);
   }
 };
 
-// This is the call to do every time a user logs in
 export const create = async (newUserDTO: {
   username: string;
   clerkUserId: string;
@@ -33,12 +32,18 @@ export const create = async (newUserDTO: {
       });
 
       // creating the Liked songs playlist (every user has one)
-      await PlaylistController.create({
+      const likedSongsData = await PlaylistController.create({
         name: "Liked Songs",
         author_id: newUserDTO.clerkUserId,
         is_liked_songs_playlist: true,
       });
-      return newUser;
+      return {
+        newUser,
+        likedSongsPlaylist: {
+          author_username: newUserDTO.username,
+          ...likedSongsData,
+        },
+      };
     } else {
       return { message: "User already exists." };
     }

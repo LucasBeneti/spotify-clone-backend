@@ -7,7 +7,7 @@ export async function userRoutes(fastify: FastifyInstance) {
   fastify.addHook("preHandler", async (request, reply) => {
     const { userId } = getAuth(request);
     if (!userId) {
-      reply.status(401).send({ erroMessage: "Unauthorized." });
+      reply.status(401).send({ errorMessage: "Unauthorized." });
     }
   });
 
@@ -17,7 +17,7 @@ export async function userRoutes(fastify: FastifyInstance) {
       return reply.status(403).send({ errorMessage: "Unauthorized access." });
     }
     const userData = await UserController.getUserInfo(userId);
-    return reply.status(201).send({ data: userData });
+    return reply.status(200).send({ data: userData });
   });
 
   fastify.post(
@@ -33,7 +33,7 @@ export async function userRoutes(fastify: FastifyInstance) {
 
       const response = await UserController.create(userToCreate);
       // TODO check response to return the correct code and message
-      return reply.status(201).send({ response });
+      return reply.status(201).send({ data: { ...response } });
     }
   );
 

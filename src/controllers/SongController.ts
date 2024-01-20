@@ -12,7 +12,20 @@ export const getSong = async (song_id: number) => {
 
 export const getSongsByArtistId = async (artist_id: number) => {
   try {
-    const artistSongs = await database("songs").where({ author_id: artist_id });
+    const artistSongs = await database("songs")
+      .where("songs.author_id", artist_id)
+      .leftJoin("albums", "albums.id", "=", "songs.album_id")
+      .select(
+        "songs.id",
+        "songs.name",
+        "songs.author_id",
+        "songs.album_id",
+        "songs.source_link",
+        "songs.duration",
+        "albums.name AS album_name",
+        "albums.cover_art"
+      )
+      .limit(10);
     return artistSongs;
   } catch (error) {
     console.error("Error while trying to fetch song from an artists.", error);
@@ -32,6 +45,7 @@ export const fuzzyFind = async (q: string) => {
         "songs.author_id",
         "songs.album_id",
         "songs.source_link",
+        "songs.duration",
         "artists.name AS artist_name",
         "albums.name AS album_name",
         "albums.cover_art"
