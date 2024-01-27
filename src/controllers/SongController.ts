@@ -15,6 +15,7 @@ export const getSongsByArtistId = async (artist_id: number) => {
     const artistSongs = await database("songs")
       .where("songs.author_id", artist_id)
       .leftJoin("albums", "albums.id", "=", "songs.album_id")
+      .leftJoin("artists", "artists.id", "=", "songs.author_id")
       .select(
         "songs.id",
         "songs.name",
@@ -23,7 +24,8 @@ export const getSongsByArtistId = async (artist_id: number) => {
         "songs.source_link",
         "songs.duration",
         "albums.name AS album_name",
-        "albums.cover_art"
+        "albums.cover_art",
+        "artists.name AS artist_name"
       )
       .limit(10);
     return artistSongs;
