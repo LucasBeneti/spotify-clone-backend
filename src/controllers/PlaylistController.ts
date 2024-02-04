@@ -58,18 +58,27 @@ export const getPlaylistSongs = async (playlist_id: number) => {
 export const getPlaylistsByUserId = async (user_id: string) => {
   try {
     const playlistInfo = await database("playlists")
+      .where("playlists.author_id", user_id)
       .select(
         "playlists.name",
         "playlists.id",
         "playlists.updated_at",
         "users.username AS author_username"
       )
-      .leftJoin("users", "playlists.author_id", "=", "users.clerk_user_id")
-      .where("playlists.author_id", user_id);
+      .leftJoin("users", "playlists.author_id", "=", "users.clerk_user_id");
     return playlistInfo;
   } catch (error) {
     console.error("error", error);
   }
+};
+
+type PlaylistCreated = {
+  name?: string;
+  playlist_id?: number | string;
+  description?: string;
+  type?: string;
+  updated_at?: string;
+  author_username?: string;
 };
 
 export const create = async ({
@@ -77,9 +86,7 @@ export const create = async ({
   description,
   author_id,
   is_liked_songs_playlist = false,
-}: PlaylistType): Promise<
-  { name?: string; playlist_id?: number } | undefined
-> => {
+}: PlaylistType): Promise<PlaylistCreated | undefined> => {
   try {
     const [createdPlaylist] = await database("playlists").insert(
       {
@@ -88,10 +95,22 @@ export const create = async ({
         author_id,
         is_liked_songs_playlist, // TODO check if this will break the feature
       },
-      ["id", "name"]
+      ["id", "name", "description", "is_liked_songs_playlist", "updated_at"]
     );
 
-    return { name: createdPlaylist.name, playlist_id: createdPlaylist.id };
+    const authorData = await database("users")
+      .where("users.clerk_user_id", author_id)
+      .select("users.username")
+      .first();
+
+    return {
+      name: createdPlaylist.name,
+      description: createdPlaylist.description,
+      playlist_id: createdPlaylist.id,
+      type: createdPlaylist.is_liked_songs_playlist ? "liked" : "playlist",
+      author_username: authorData.username,
+      updated_at: createdPlaylist.updated_at,
+    };
   } catch (error) {
     console.error("Error on CREATE playlist.", error);
   }

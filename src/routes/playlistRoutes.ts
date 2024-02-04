@@ -36,6 +36,7 @@ export async function playlistRoutes(fastify: FastifyInstance) {
   fastify.get("/user", async (request: FastifyRequest, reply: FastifyReply) => {
     const { userId } = getAuth(request);
     if (!userId) {
+      // TODO check first if user exists on the database
       return reply.status(403).send({ error: "User not existent." });
     }
 
@@ -82,7 +83,7 @@ export async function playlistRoutes(fastify: FastifyInstance) {
           });
         }
 
-        return reply.status(201).send({ createdResponse });
+        return reply.status(201).send({ ...createdResponse });
       } catch (error) {
         console.error("POST error while trying to create a playlist.", error);
         reply.status(500).send({ error });
